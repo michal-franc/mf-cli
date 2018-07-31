@@ -1,8 +1,9 @@
-Cli app to control most typical tasks in my workflow
+Set of simple cli tools usefull in my every day work
 
-To use cobra generator this repo has to be installed to you /go/src
+Supports commands:
+- mf github - opens local repository master remote url in default browser using `xdg-open`
 
-- example /home/mfranc/go/src/<here>
 
-Perequisities:
-- https://github.com/spf13/cobra
+### To Install
+
+Just run `make` it compiles the code and moves the binary to `/usr/bin`
