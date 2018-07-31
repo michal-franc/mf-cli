@@ -18,7 +18,26 @@ import (
 	"github.com/spf13/cobra"
 	"log"
 	"os/exec"
+	"regexp"
 )
+
+func getLocalGitURL() string {
+	getRemoteURL := exec.Command("git", "remote", "get-url", "origin")
+	remoteGitURL, err := getRemoteURL.CombinedOutput()
+
+	if err != nil {
+		log.Printf("Unable to get local git remote url: %v", err)
+		return ""
+	}
+
+	findGit := regexp.MustCompile("git@github.com:")
+	removedGit := findGit.ReplaceAllString(string(remoteGitURL), "http://github.com/")
+
+	log.Printf("Found github url for local repo")
+	log.Printf(removedGit)
+
+	return removedGit
+}
 
 // githubCmd represents the github command
 var githubCmd = &cobra.Command{
@@ -34,12 +53,21 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Printf("Opening github repo url in the browser")
-		openBrowserCommand := exec.Command("xdg-open", "http://www.google.com")
-		err := openBrowserCommand.Run()
 
-		if err != nil {
-			log.Printf("Command finished with error: %v", err)
+		url := getLocalGitURL()
+
+		if len(url) > 0 {
+			openBrowserCommand := exec.Command("xdg-open", url)
+			err := openBrowserCommand.Run()
+
+			if err != nil {
+				log.Printf("Command finished with error: %v", err)
+			}
+			return
 		}
+
+		log.Printf("Github remote url empty cannot open browser")
+		return
 	},
 }
 
