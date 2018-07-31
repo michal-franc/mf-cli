@@ -14,7 +14,7 @@
 
 package main
 
-import "mf/cmd"
+import "github.com/michal-franc/mf-cli/cmd"
 
 func main() {
 	cmd.Execute()

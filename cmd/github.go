@@ -15,7 +15,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"log"
 	"os/exec"
@@ -34,7 +33,13 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("github called")
+		log.Printf("Opening github repo url in the browser")
+		openBrowserCommand := exec.Command("xdg-open", "http://www.google.com")
+		err := openBrowserCommand.Run()
+
+		if err != nil {
+			log.Printf("Command finished with error: %v", err)
+		}
 	},
 }
 
@@ -50,11 +55,4 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// githubCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
-	cmd := exec.Command("xdg-open", "http://www.google.com")
-	err := cmd.Run()
-
-	if err != nil {
-		log.Printf("Command finished with error: %v", err)
-	}
 }
