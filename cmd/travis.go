@@ -6,9 +6,10 @@ import (
 	"log"
 	"os/exec"
 	"regexp"
+	"strings"
 )
 
-func getLocalGitURL() (string, error) {
+func getTravisUrlFromGitRepo() (string, error) {
 	getRemoteURL := exec.Command("git", "remote", "get-url", "origin")
 	remoteGitURL, err := getRemoteURL.CombinedOutput()
 
@@ -17,21 +18,23 @@ func getLocalGitURL() (string, error) {
 	}
 
 	findGit := regexp.MustCompile("git@github.com:")
-	removedGit := findGit.ReplaceAllString(string(remoteGitURL), "http://github.com/")
+	removedGit := findGit.ReplaceAllString(string(remoteGitURL), "https://travis-ci.com/")
 
-	log.Printf("Found github url for local repo %s", removedGit)
+	removedGit = strings.TrimSuffix(removedGit, ".git\n")
+
+	log.Printf("Found travis url for local repo %s", removedGit)
 
 	return removedGit, nil
 }
 
 // githubCmd represents the github command
-var githubCmd = &cobra.Command{
-	Use:   "github",
-	Short: "Opens up a default browser with master remote url for github.",
+var travisCommand = &cobra.Command{
+	Use:   "travis",
+	Short: "Opens up a default browser with travis url to git repo.",
 	Run: func(_ *cobra.Command, _ []string) {
-		log.Printf("Opening github repo url in the browser")
+		log.Printf("Opening travis job url in the browser")
 
-		url, err := getLocalGitURL()
+		url, err := getTravisUrlFromGitRepo()
 
 		if err != nil {
 			log.Printf("Github remote url empty cannot open browser")
@@ -47,5 +50,5 @@ var githubCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(githubCmd)
+	rootCmd.AddCommand(travisCommand)
 }

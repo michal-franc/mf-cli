@@ -1,3 +1,3 @@
 install:
 	go build
-	sudo mv mf-cli /usr/bin/mf
+	mv mf-cli /usr/bin/mf
